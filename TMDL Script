@@ -1,0 +1,219 @@
+createOrReplace
+
+	table 'Raw Data (1)'
+		lineageTag: 53fe39a0-e64b-411e-a3b9-f57c551633ab
+
+		measure 'Total Sales' = SUM('Raw Data (1)'[Sales])
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: adbe1c0e-13e4-4fbb-9f42-3fe296e3154a
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Total Profit' = SUM('Raw Data (1)'[Profit])
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 86dffe33-5884-435d-baa8-fa64fd5a52ae
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Profit Margin %' = ([Total Profit]/[Total Sales]) * 100
+			lineageTag: 1be706e5-dd40-4297-926e-5df29393dd9b
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'Total Sales _PreviousYear' = CALCULATE(SUM('Raw Data (1)'[Sales]),SAMEPERIODLASTYEAR('Raw Data (1)'[Order Date]))
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 63fcb3d1-54bf-4f1d-ae11-37ea9c1a4838
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Total Growth' = SUM('Raw Data (1)'[Sales])
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 54c67bc4-6575-44b0-a507-f6ba675690ce
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure Total_Variance = [Total Sales]-[Total Sales _PreviousYear]
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: c9e4e839-7d0e-4e35-b830-d68b8e5e74fb
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Growth YtY | Variance' =
+				
+				VAR ARROW= IF([Growth YtY]>0,UNICHAR(9650) , UNICHAR(9660))
+				
+				RETURN
+				ARROW & FORMAT([Growth YtY], "##.#%") &" | "& FORMAT([Variance Sales], "##,.0K")
+			lineageTag: f9fe5668-9d09-4a1f-8a93-16e4e20bb12b
+
+		measure 'Total Sales 2017' = CALCULATE([Total Sales], YEAR(DateTable[Date]) = 2017)
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: a37f0511-44b4-4573-9b21-ddb4ce886570
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Total Sales 2016' = CALCULATE([Total Sales], YEAR(DateTable[Date]) = 2016)
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 549a5683-1523-4415-a7f0-dfe9d8b2f2f7
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Growth YtY' = DIVIDE([Total Sales 2017] - [Total Sales 2016], [Total Sales 2016])
+			formatString: 0.0%;-0.0%;0.0%
+			lineageTag: 58b9aa49-520c-4b5a-8575-dd8108968cb3
+
+		measure 'Variance Sales' = [Total Sales 2017]-[Total Sales 2016]
+			formatString: \$#,0;(\$#,0);\$#,0
+			lineageTag: c2081d07-c1e7-4f76-a3c6-dfe07229990b
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Trend Color' =
+				
+				IF([Growth YtY]>0,"#008000","#FF0000")
+			lineageTag: 6888f5a6-646c-4ffd-9a22-23f0b018a22c
+
+		measure 'Total growth | Sales' =
+				
+				VAR ARROW= IF([Growth YtY]>0,UNICHAR(9650) , UNICHAR(9660))
+				
+				RETURN
+				ARROW & FORMAT([Growth YtY], "##.#%") &" | "& FORMAT([Total Sales 2017], "##,.0K")
+			lineageTag: eb821348-d709-4956-95dd-8acdd3b54964
+
+		measure 'Total Profit 2017' = CALCULATE([Total Profit], YEAR(DateTable[Date]) = 2017)
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 14064ce4-cb35-458a-af30-d58b4317423d
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Total Profit 2016' = CALCULATE([Total Profit], YEAR(DateTable[Date]) = 2016)
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 609288a7-4339-44eb-b739-24115ae2ad92
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Variance Profit (%)' = DIVIDE([Total Profit 2017] - [Total Profit 2016], [Total Profit 2016])
+			formatString: #,0.0%;-#,0.0%;#,0.0%
+			lineageTag: 87f392fc-eec8-46b5-8712-67ad670212e4
+
+		measure 'Variance Profit' = [Total Profit 2017] - [Total Profit 2016]
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 129ad5ec-8c52-44bc-98db-a30cafce87f7
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		measure 'Profit YtY | Variance' =
+				
+				VAR ARROW= IF([Variance Profit (%)]>0,UNICHAR(9650) , UNICHAR(9660))
+				
+				RETURN
+				ARROW & FORMAT([Variance Profit (%)], "##.#%") &" | "& FORMAT([Variance Profit], "##,.0K")
+			lineageTag: c38b37b8-8528-4eff-89dc-a416b8fa2bd6
+
+		column 'Order Date'
+			dataType: dateTime
+			formatString: Long Date
+			lineageTag: 36a78410-43e5-4e4b-b1a0-734ab5714499
+			summarizeBy: none
+			sourceColumn: Order Date
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		column 'Customer Name'
+			dataType: string
+			lineageTag: dc7b3115-83a2-4f0d-ae63-48d6fec02f64
+			summarizeBy: none
+			sourceColumn: Customer Name
+
+			annotation SummarizationSetBy = Automatic
+
+		column State
+			dataType: string
+			lineageTag: fc29a328-6a78-4b91-89f0-6ba6fdcba611
+			summarizeBy: none
+			sourceColumn: State
+
+			annotation SummarizationSetBy = Automatic
+
+		column Category
+			dataType: string
+			lineageTag: f16acb46-4101-4545-82bc-f591ef277591
+			summarizeBy: none
+			sourceColumn: Category
+
+			annotation SummarizationSetBy = Automatic
+
+		column Sub-Category
+			dataType: string
+			lineageTag: 2cb0c2c8-51c4-4c5b-9c71-8949f49b468c
+			summarizeBy: none
+			sourceColumn: Sub-Category
+
+			annotation SummarizationSetBy = Automatic
+
+		column 'Product Name'
+			dataType: string
+			lineageTag: 5aac4b4f-8832-4afa-b7a4-29f691c1abec
+			summarizeBy: none
+			sourceColumn: Product Name
+
+			annotation SummarizationSetBy = Automatic
+
+		column Sales
+			dataType: decimal
+			lineageTag: 00829931-e8a7-4d91-87bf-b678d4d54fed
+			summarizeBy: sum
+			sourceColumn: Sales
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column Quantity
+			dataType: int64
+			formatString: 0
+			lineageTag: 75b823e2-77cf-41f6-900d-208e94c2a098
+			summarizeBy: sum
+			sourceColumn: Quantity
+
+			annotation SummarizationSetBy = Automatic
+
+		column Profit
+			dataType: decimal
+			lineageTag: 35319b33-a452-47a4-993c-b90711ddf287
+			summarizeBy: sum
+			sourceColumn: Profit
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		column Year
+			dataType: int64
+			formatString: 0
+			lineageTag: 13f0585f-629f-4a8e-aed5-36a70118a8ed
+			summarizeBy: sum
+			sourceColumn: Year
+
+			annotation SummarizationSetBy = Automatic
+
+		partition 'Raw Data (1)' = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(File.Contents("C:\Users\ethelayika\Downloads\Raw Data (1).csv"),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+					    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Promoted Headers", {{"Order Date", type date}}, "fr-FR"),
+					    #"Inserted Year" = Table.AddColumn(#"Changed Type with Locale", "Year", each Date.Year([Order Date]), Int64.Type),
+					    #"Reordered Columns" = Table.ReorderColumns(#"Inserted Year",{"Order Date", "Year", "Customer Name", "State", "Category", "Sub-Category", "Product Name", "Sales", "Quantity", "Profit"}),
+					    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"Sales", Currency.Type}, {"Quantity", Int64.Type}, {"Profit", Currency.Type}})
+					in
+					    #"Changed Type"
+
+		annotation PBI_ResultType = Table
+
+		annotation PBI_NavigationStepName = Navigation
+
