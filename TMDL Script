@@ -38,10 +38,10 @@ createOrReplace
 
 			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
-		measure 'Growth YtY | Variance' =
-				
+		measure 'Growth YtY | Variance' = 
+
 				VAR ARROW= IF([Growth YtY]>0,UNICHAR(9650) , UNICHAR(9660))
-				
+
 				RETURN
 				ARROW & FORMAT([Growth YtY], "##.#%") &" | "& FORMAT([Variance Sales], "##,.0K")
 			lineageTag: f9fe5668-9d09-4a1f-8a93-16e4e20bb12b
@@ -68,15 +68,13 @@ createOrReplace
 
 			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
-		measure 'Trend Color' =
-				
-				IF([Growth YtY]>0,"#008000","#FF0000")
+		measure 'Trend Color' = IF([Growth YtY]>0,"#008000","#FF0000")
 			lineageTag: 6888f5a6-646c-4ffd-9a22-23f0b018a22c
 
-		measure 'Total growth | Sales' =
-				
+		measure 'Total growth | Sales' = 
+
 				VAR ARROW= IF([Growth YtY]>0,UNICHAR(9650) , UNICHAR(9660))
-				
+
 				RETURN
 				ARROW & FORMAT([Growth YtY], "##.#%") &" | "& FORMAT([Total Sales 2017], "##,.0K")
 			lineageTag: eb821348-d709-4956-95dd-8acdd3b54964
@@ -103,10 +101,10 @@ createOrReplace
 
 			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
-		measure 'Profit YtY | Variance' =
-				
+		measure 'Profit YtY | Variance' = 
+
 				VAR ARROW= IF([Variance Profit (%)]>0,UNICHAR(9650) , UNICHAR(9660))
-				
+
 				RETURN
 				ARROW & FORMAT([Variance Profit (%)], "##.#%") &" | "& FORMAT([Variance Profit], "##,.0K")
 			lineageTag: c38b37b8-8528-4eff-89dc-a416b8fa2bd6
@@ -140,23 +138,21 @@ createOrReplace
 
 			annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-		measure 'Costs YtY | Variance' =
-				
+		measure 'Costs YtY | Variance' = 
+
 				VAR ARROW= IF([Variance Costs(%)]>0,UNICHAR(9650) , UNICHAR(9660))
-				
+
 				RETURN
 				ARROW & FORMAT([Variance Costs(%)], "##.#%") &" | "& FORMAT([Variance Costs], "##,.0K")
 			lineageTag: b580a24e-1ce9-4ae4-8e2b-2a0a4f4c122d
 
-		measure 'Profit Trend Color' =
-				
-				IF([Profit Margin %]>0,"#008000","#FF0000")
+		measure 'Profit Trend Color' = IF([Profit Margin %]>0,"#008000","#FF0000")
 			lineageTag: df73e3da-7b31-4091-b374-c13c6817066d
 
-		measure 'Profit Margin Trend' =
-				
+		measure 'Profit Margin Trend' = 
+
 				VAR ARROW= IF([Profit Margin %]>0,UNICHAR(9650) , UNICHAR(9660))
-				
+
 				RETURN
 				ARROW & FORMAT([Profit Margin %], "##.#%")
 			lineageTag: 72e148c5-df9d-4152-b6af-abfd7698284f
@@ -263,20 +259,44 @@ createOrReplace
 
 		partition 'Raw Data (1)' = m
 			mode: import
-			source =
+			source = 
 					let
-					    Source = Csv.Document(File.Contents("C:\Users\ethelayika\Downloads\Raw Data (1).csv"),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
-					    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-					    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Promoted Headers", {{"Order Date", type date}}, "fr-FR"),
-					    #"Inserted Year" = Table.AddColumn(#"Changed Type with Locale", "Year", each Date.Year([Order Date]), Int64.Type),
-					    #"Reordered Columns" = Table.ReorderColumns(#"Inserted Year",{"Order Date", "Year", "Customer Name", "State", "Category", "Sub-Category", "Product Name", "Sales", "Quantity", "Profit"}),
-					    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"Sales", Currency.Type}, {"Quantity", Int64.Type}, {"Profit", Currency.Type}}),
-					    #"Added Custom" = Table.AddColumn(#"Changed Type", "Costs", each [Sales] - [Profit]),
-					    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Costs", Currency.Type}}),
-					    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type1", {{"Order Date", type text}}, "en-US"),
-					    #"Changed Type2" = Table.TransformColumnTypes(#"Changed Type with Locale1",{{"Order Date", type date}})
+						Source = Csv.Document(
+							File.Contents("C:\Users\ethelayika\Downloads\Raw Data (1).csv"),
+							[
+								Delimiter = ",",
+								Columns = 9,
+								Encoding = 65001,
+								QuoteStyle = QuoteStyle.None
+							]
+						),
+						#"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+						#"Changed Type with Locale" = Table.TransformColumnTypes(#"Promoted Headers", {{"Order Date", type date}}, "fr-FR"),
+						#"Inserted Year" = Table.AddColumn(#"Changed Type with Locale", "Year", each Date.Year([Order Date]), Int64.Type),
+						#"Reordered Columns" = Table.ReorderColumns(
+							#"Inserted Year",
+							{
+								"Order Date",
+								"Year",
+								"Customer Name",
+								"State",
+								"Category",
+								"Sub-Category",
+								"Product Name",
+								"Sales",
+								"Quantity",
+								"Profit"
+							}
+						),
+						#"Changed Type" = Table.TransformColumnTypes(
+							#"Reordered Columns", {{"Sales", Currency.Type}, {"Quantity", Int64.Type}, {"Profit", Currency.Type}}
+						),
+						#"Added Custom" = Table.AddColumn(#"Changed Type", "Costs", each [Sales] - [Profit]),
+						#"Changed Type1" = Table.TransformColumnTypes(#"Added Custom", {{"Costs", Currency.Type}}),
+						#"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type1", {{"Order Date", type text}}, "en-US"),
+						#"Changed Type2" = Table.TransformColumnTypes(#"Changed Type with Locale1", {{"Order Date", type date}})
 					in
-					    #"Changed Type2"
+						#"Changed Type2"
 
 		annotation PBI_ResultType = Table
 
