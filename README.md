@@ -1,6 +1,6 @@
 # Profitability-Analysis
 
-![](IKEA_Generative-AI_furniture-design_8.webp)
+![](Furniture.avif)
 ## Introduction
 This is a Sales Analysis of an imaginary store called **KI Store** using Power BI. The project's intent is to analyze the store historical sales data and derive key insights on profitability and strategy.
 
