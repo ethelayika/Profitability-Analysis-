@@ -26,4 +26,4 @@ The report comprises 2 pages
 1. Profitability by Year and State
 2. Profitability Analysis
 
-You can interact with the report [here](https://app.powerbi.com/groups/me/reports/0776b02e-c9c0-48c6-978e-e428be979d01/9a142962800b13050e79?experience=power-bi)
+You can interact with the report [here](https://app.powerbi.com/view?r=eyJrIjoiODNmOTEzYmItN2I2NC00MzBmLTk0ZGYtN2Y5N2YyNjBkYmVhIiwidCI6ImE5MmViNzUxLTYyOWUtNDZmNi1hNzQwLTI2ZDY2MTAzY2E1MyIsImMiOjF9)
